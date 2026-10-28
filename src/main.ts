@@ -27,12 +27,20 @@ import '@ionic/vue/css/display.css';
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
-/* @import '@ionic/vue/css/palettes/dark.always.css'; */
-/* @import '@ionic/vue/css/palettes/dark.class.css'; */
-import '@ionic/vue/css/palettes/dark.system.css';
-
 /* Theme variables */
 import './theme/variables.css';
+import { initializeSession } from './services/session';
+
+// Inicia a restauração da sessão sempre que o app tem Firebase configurado.
+initializeSessionIfConfigured();
+
+function initializeSessionIfConfigured() {
+  try {
+    initializeSession();
+  } catch {
+    /* Firebase ainda não foi configurado no ambiente. */
+  }
+}
 
 const app = createApp(App).use(IonicVue).use(router);
 
