@@ -1,0 +1,7 @@
+{
+  "name": "pesquisa",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
