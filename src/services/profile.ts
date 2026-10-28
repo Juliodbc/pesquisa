@@ -49,10 +49,15 @@ export async function saveProfile(uid: string, profile: UserProfile, image?: Blo
   let photoURL = profile.photoURL;
   if (image) {
     const base64 = await imageToBase64(image);
-    const imageRef = ref(storage, `users/${uid}/profile`);
-    await uploadBytes(imageRef, image, { contentType: image.type || 'image/jpeg' });
-    photoURL = await getDownloadURL(imageRef);
     await setDoc(doc(db, 'images', uid), { image: base64, updatedAt: new Date().toISOString() });
+    photoURL = `data:image/jpeg;base64,${base64}`;
+    try {
+      const imageRef = ref(storage, `users/${uid}/profile`);
+      await uploadBytes(imageRef, image, { contentType: image.type || 'image/jpeg' });
+      photoURL = await getDownloadURL(imageRef);
+    } catch (error) {
+      console.warn('Storage indisponível; imagem mantida no Firestore.', error);
+    }
   }
   const result = { ...profile, photoURL, updatedAt: new Date().toISOString() };
   await setDoc(doc(db, 'users', uid), result, { merge: true });
